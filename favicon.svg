@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Rounded Background Tile -->
+  <rect width="64" height="64" rx="14" fill="#2563eb" />
+  
+  <!-- Pen Nib -->
+  <path d="M42 12 L50 20 L32 38 L24 40 L26 32 Z" fill="#ffffff" />
+  <circle cx="34" cy="28" r="1.5" fill="#2563eb" />
+  <line x1="24" y1="40" x2="30" y2="34" stroke="#2563eb" stroke-width="1.2" stroke-linecap="round" />
+  
+  <!-- Flowing Signature Line -->
+  <path d="M14 48 Q 22 36, 32 46 T 50 44" fill="none" stroke="#60a5fa" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
+
