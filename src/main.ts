@@ -32,6 +32,15 @@ const historyGrid = document.getElementById('history-grid') as HTMLElement;
 const emptyHistoryMsg = document.getElementById('empty-history-msg') as HTMLElement;
 const toastContainer = document.getElementById('toast-container') as HTMLElement;
 
+// Fullscreen & Rotation Elements
+const standardCanvasSlot = document.getElementById('standard-canvas-slot') as HTMLElement;
+const fullscreenCanvasSlot = document.getElementById('fullscreen-canvas-slot') as HTMLElement;
+const btnFullscreenToggle = document.getElementById('btn-fullscreen-toggle') as HTMLElement;
+const fsBtnUndo = document.getElementById('fs-btn-undo') as HTMLButtonElement;
+const fsBtnRedo = document.getElementById('fs-btn-redo') as HTMLButtonElement;
+const fsBtnClear = document.getElementById('fs-btn-clear') as HTMLButtonElement;
+const fsBtnDone = document.getElementById('fs-btn-done') as HTMLButtonElement;
+
 // Initialize Drawing Engine
 const engine = new DrawingEngine({
     svgElement,
@@ -69,6 +78,11 @@ function onDrawingStateChanged(): void {
     btnSaveHistory.disabled = !hasStrokes;
     btnCopySvg.disabled = !hasStrokes;
     btnDownloadA4.disabled = !hasStrokes;
+
+    // Synchronize Fullscreen HUD buttons
+    if (fsBtnUndo) fsBtnUndo.disabled = !engine.canUndo();
+    if (fsBtnRedo) fsBtnRedo.disabled = !engine.canRedo();
+    if (fsBtnClear) fsBtnClear.disabled = !hasStrokes;
 
     if (hasStrokes) {
         canvasWrapper.classList.add('canvas-has-strokes');
@@ -367,8 +381,70 @@ window.addEventListener('keydown', (e) => {
         }
     } else if ((e.ctrlKey || e.metaKey) && e.key === 'y') {
         engine.redo();
+    } else if (e.key === 'Escape' && document.body.classList.contains('fullscreen-mode')) {
+        exitFullscreen();
     }
 });
+
+// Fullscreen & Mobile Landscape Mode Management
+let isAutoLandscapeMode = false;
+
+function enterFullscreen(auto: boolean = false): void {
+    isAutoLandscapeMode = auto;
+    document.body.classList.add('fullscreen-mode');
+    fullscreenCanvasSlot.appendChild(canvasWrapper);
+}
+
+function exitFullscreen(): void {
+    isAutoLandscapeMode = false;
+    document.body.classList.remove('fullscreen-mode');
+    standardCanvasSlot.appendChild(canvasWrapper);
+    updatePhysicalPreview();
+}
+
+if (btnFullscreenToggle) {
+    btnFullscreenToggle.addEventListener('click', () => {
+        enterFullscreen(false);
+        showToast('Landscape full-screen signing mode active. Tap Done or rotate when finished.');
+    });
+}
+
+if (fsBtnDone) {
+    fsBtnDone.addEventListener('click', () => {
+        exitFullscreen();
+        showToast('Signature captured! Ready to download & save.');
+    });
+}
+
+if (fsBtnUndo) fsBtnUndo.addEventListener('click', () => engine.undo());
+if (fsBtnRedo) fsBtnRedo.addEventListener('click', () => engine.redo());
+if (fsBtnClear) fsBtnClear.addEventListener('click', () => engine.clear());
+
+// Automatic detection when rotating phone between portrait and landscape
+function handleOrientationChange(): void {
+    const isLandscape = window.matchMedia('(orientation: landscape)').matches;
+    // Typical smartphone landscape height is <= 650px
+    const isPhoneOrTabletLandscape = isLandscape && window.innerHeight <= 650;
+
+    if (isPhoneOrTabletLandscape) {
+        if (!document.body.classList.contains('fullscreen-mode')) {
+            enterFullscreen(true);
+            showToast('Landscape mode detected: fullscreen signing enabled');
+        }
+    } else {
+        // When phone is held upright again (portrait), return back to the standard page
+        if (document.body.classList.contains('fullscreen-mode') && isAutoLandscapeMode) {
+            exitFullscreen();
+            showToast('Phone held upright: signature ready to download');
+        }
+    }
+}
+
+window.addEventListener('resize', handleOrientationChange);
+window.addEventListener('orientationchange', handleOrientationChange);
+if (window.screen && window.screen.orientation) {
+    window.screen.orientation.addEventListener('change', handleOrientationChange);
+}
 
 // Initial state call
 onDrawingStateChanged();

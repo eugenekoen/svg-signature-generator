@@ -611,3 +611,122 @@ input:checked+.slider:before {
         transform: translateY(0);
     }
 }
+
+/* Fullscreen Landscape Signing Overlay */
+body.fullscreen-mode {
+    overflow: hidden !important;
+}
+
+.fullscreen-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #090d16;
+    z-index: 99999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px 12px 16px;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body.fullscreen-mode .fullscreen-overlay {
+    display: flex;
+}
+
+.fullscreen-hud {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 8px;
+    color: #f8fafc;
+    flex-shrink: 0;
+}
+
+.fullscreen-hud-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #94a3b8;
+}
+
+.fullscreen-hud-title strong {
+    color: #38bdf8;
+}
+
+.fullscreen-hud-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.fullscreen-hud-actions .btn {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #f1f5f9;
+}
+
+.fullscreen-hud-actions .btn:hover:not(:disabled) {
+    background-color: #334155;
+}
+
+.fullscreen-hud-actions .btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+}
+
+.fullscreen-hud-actions .btn-danger {
+    background-color: #450a0a;
+    border-color: #7f1d1d;
+    color: #fca5a5;
+}
+
+.fullscreen-canvas-slot {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex: 1;
+    overflow: hidden;
+    padding: 4px 0;
+}
+
+/* In fullscreen mode, make the canvas wrapper fill available screen maintaining 2:1 ratio */
+body.fullscreen-mode .canvas-wrapper {
+    aspect-ratio: 2 / 1;
+    width: min(calc(100vw - 32px), calc((100vh - 68px) * 2));
+    height: auto;
+    max-height: calc(100vh - 68px);
+    border: 2px solid #38bdf8;
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
+    margin: auto;
+}
+
+.rotate-hint-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.rotate-hint-pill:hover {
+    background-color: #dbeafe;
+}
