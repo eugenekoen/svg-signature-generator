@@ -1,0 +1,20 @@
+{
+    "name": "svg-signature-generator",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build && node -e \"const fs = require('fs'); fs.copyFileSync('dist/bundle.js', 'bundle.js');\"",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "jspdf": "^4.2.1",
+        "lucide": "^1.16.0",
+        "svg2pdf.js": "^2.8.1"
+    },
+    "devDependencies": {
+        "typescript": "^5.8.2",
+        "vite": "^6.2.0"
+    }
+}
