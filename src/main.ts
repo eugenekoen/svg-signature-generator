@@ -19,6 +19,8 @@ const btnSaveHistory = document.getElementById('btn-save-history') as HTMLButton
 const btnCopySvg = document.getElementById('btn-copy-svg') as HTMLButtonElement;
 const btnDownloadA4 = document.getElementById('btn-download-a4') as HTMLButtonElement;
 const btnClearHistory = document.getElementById('btn-clear-history') as HTMLButtonElement;
+const pdfFilenameDialog = document.getElementById('pdf-filename-dialog') as HTMLDialogElement;
+const pdfFilenameInput = document.getElementById('pdf-filename-input') as HTMLInputElement;
 
 // Settings Controls
 const staffNameInput = document.getElementById('staff-name') as HTMLInputElement;
@@ -67,6 +69,25 @@ function getSafeFilename(extension: 'svg' | 'pdf'): string {
     const now = new Date();
     const dateStr = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
     return `${staff}_5x2.5cm_${dateStr}.${extension}`;
+}
+
+function getPdfFilename(): Promise<string | null> {
+    pdfFilenameInput.value = getSafeFilename('pdf');
+    pdfFilenameDialog.showModal();
+    pdfFilenameInput.focus();
+    pdfFilenameInput.select();
+
+    return new Promise((resolve) => {
+        pdfFilenameDialog.addEventListener('close', () => {
+            if (pdfFilenameDialog.returnValue !== 'download') {
+                resolve(null);
+                return;
+            }
+
+            const filename = pdfFilenameInput.value.trim();
+            resolve(filename ? (filename.toLowerCase().endsWith('.pdf') ? filename : `${filename}.pdf`) : null);
+        }, { once: true });
+    });
 }
 
 function onDrawingStateChanged(): void {
@@ -167,8 +188,10 @@ btnDownloadSvg.addEventListener('click', () => {
 // Download Vector PDF
 btnDownloadPdf.addEventListener('click', async () => {
     if (engine.isEmpty()) return;
+    const filename = await getPdfFilename();
+    if (!filename) return;
+
     const settings = getExportSettings();
-    const filename = getSafeFilename('pdf');
     btnDownloadPdf.disabled = true;
 
     try {

@@ -298,6 +298,18 @@
         <div class="fullscreen-canvas-slot" id="fullscreen-canvas-slot"></div>
     </div>
 
+    <dialog id="pdf-filename-dialog" class="filename-dialog" aria-labelledby="pdf-filename-title">
+        <form method="dialog" class="filename-dialog-content">
+            <h2 id="pdf-filename-title">Name your PDF</h2>
+            <label class="form-label" for="pdf-filename-input">File name</label>
+            <input id="pdf-filename-input" class="text-input" type="text" autocomplete="off" required />
+            <div class="filename-dialog-actions">
+                <button class="btn" type="submit" value="cancel">Cancel</button>
+                <button class="btn btn-primary" type="submit" value="download">Download PDF</button>
+            </div>
+        </form>
+    </dialog>
+
     <!-- Toast notifications container -->
     <div class="toast-container" id="toast-container"></div>
 
