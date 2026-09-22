@@ -14,6 +14,7 @@ const btnRedo = document.getElementById('btn-redo') as HTMLButtonElement;
 const btnClear = document.getElementById('btn-clear') as HTMLButtonElement;
 const btnDownloadSvg = document.getElementById('btn-download-svg') as HTMLButtonElement;
 const btnDownloadPdf = document.getElementById('btn-download-pdf') as HTMLButtonElement;
+const btnShare = document.getElementById('btn-share') as HTMLButtonElement;
 const btnSaveHistory = document.getElementById('btn-save-history') as HTMLButtonElement;
 const btnCopySvg = document.getElementById('btn-copy-svg') as HTMLButtonElement;
 const btnDownloadA4 = document.getElementById('btn-download-a4') as HTMLButtonElement;
@@ -75,6 +76,7 @@ function onDrawingStateChanged(): void {
     btnClear.disabled = !hasStrokes;
     btnDownloadSvg.disabled = !hasStrokes;
     btnDownloadPdf.disabled = !hasStrokes;
+    btnShare.disabled = !hasStrokes;
     btnSaveHistory.disabled = !hasStrokes;
     btnCopySvg.disabled = !hasStrokes;
     btnDownloadA4.disabled = !hasStrokes;
@@ -179,6 +181,37 @@ btnDownloadPdf.addEventListener('click', async () => {
     } finally {
         btnDownloadPdf.disabled = false;
     }
+});
+
+// Share signature
+btnShare.addEventListener('click', async () => {
+    if (engine.isEmpty()) return;
+
+    const settings = getExportSettings();
+    const svgString = generateSvgMarkup(engine, settings);
+    const staffName = staffNameInput.value.trim() || 'Signature';
+    const file = new File([svgString], getSafeFilename('svg'), { type: 'image/svg+xml' });
+    const shareData: ShareData = {
+        title: `${staffName} - SVG signature`,
+        text: `SVG signature for ${staffName}`,
+        files: [file]
+    };
+    const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (isMobileDevice && navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+        try {
+            await navigator.share(shareData);
+            showToast('Signature shared');
+            return;
+        } catch (err) {
+            if (err instanceof DOMException && err.name === 'AbortError') return;
+        }
+    }
+
+    const subject = encodeURIComponent(`${staffName} - SVG signature`);
+    const body = encodeURIComponent(`SVG signature for ${staffName}\n\nThe SVG markup is included below:\n\n${svgString}`);
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    showToast('Opening your email app');
 });
 
 // Download A4 Sheet PDF

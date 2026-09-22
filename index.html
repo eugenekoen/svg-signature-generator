@@ -98,20 +98,6 @@
 
             <!-- Main Download Action Bar -->
             <div class="export-bar">
-                <button id="btn-download-svg" class="btn btn-primary btn-export" disabled>
-                    <span>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            style="vertical-align: -3px; margin-right: 4px;">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                            <polyline points="7 10 12 15 17 10" />
-                            <line x1="12" y1="15" x2="12" y2="3" />
-                        </svg>
-                        Download SVG
-                    </span>
-                    <span class="btn-subtext">50mm × 25mm • Transparent Vector</span>
-                </button>
-
                 <button id="btn-download-pdf" class="btn btn-primary btn-export" disabled>
                     <span>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -139,24 +125,16 @@
                     </svg>
                     Save to Memory
                 </button>
-                <button id="btn-copy-svg" class="btn btn-sm" disabled title="Copy raw SVG markup to clipboard">
+                <button id="btn-share" class="btn btn-sm btn-share-action" disabled title="Share signature">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
-                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                        <circle cx="18" cy="5" r="3" />
+                        <circle cx="6" cy="12" r="3" />
+                        <circle cx="18" cy="19" r="3" />
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
                     </svg>
-                    Copy SVG Markup
-                </button>
-                <button id="btn-download-a4" class="btn btn-sm" disabled
-                    title="Download A4 Verification Sheet with 5cm x 2.5cm box">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                        <polyline points="14 2 14 8 20 8" />
-                        <line x1="16" y1="13" x2="8" y2="13" />
-                        <line x1="16" y1="17" x2="8" y2="17" />
-                    </svg>
-                    A4 Sheet PDF
+                    Share
                 </button>
             </div>
         </div>
@@ -237,6 +215,46 @@
             </div>
         </aside>
     </main>
+
+    <!-- Advanced Export and Sharing Options -->
+    <section class="advanced-section">
+        <div class="advanced-header">
+            <div>
+                <h2 class="section-title">Advanced options</h2>
+                <span class="dim-info">Export or copy the current signature</span>
+            </div>
+        </div>
+        <div class="advanced-actions">
+            <button id="btn-download-svg" class="btn btn-primary" disabled>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Download SVG
+            </button>
+            <button id="btn-copy-svg" class="btn" disabled title="Copy raw SVG markup to clipboard">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="14" height="14" x="8" y="8" rx="2" />
+                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                </svg>
+                Copy SVG Markup
+            </button>
+            <button id="btn-download-a4" class="btn" disabled
+                title="Download A4 Verification Sheet with 5cm x 2.5cm box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+                A4 Sheet PDF
+            </button>
+        </div>
+    </section>
 
     <!-- History / In-Memory Saved Signatures -->
     <section class="history-section">
