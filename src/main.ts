@@ -1,5 +1,5 @@
 import { DrawingEngine } from './drawing-engine';
-import { generateSvgMarkup, downloadSvgFile, downloadVectorPdf, downloadA4DocumentPdf } from './vector-export';
+import { generateSvgMarkup, downloadSvgFile, downloadVectorPdf, downloadA4DocumentPdf, generateVectorPdfBlob } from './vector-export';
 import { signatureStore } from './storage';
 import { ExportSettings, SignatureRecord } from './types';
 
@@ -190,7 +190,6 @@ btnDownloadPdf.addEventListener('click', async () => {
     if (engine.isEmpty()) return;
     const filename = await getPdfFilename();
     if (!filename) return;
-
     const settings = getExportSettings();
     btnDownloadPdf.disabled = true;
 
@@ -211,30 +210,37 @@ btnShare.addEventListener('click', async () => {
     if (engine.isEmpty()) return;
 
     const settings = getExportSettings();
-    const svgString = generateSvgMarkup(engine, settings);
     const staffName = staffNameInput.value.trim() || 'Signature';
-    const file = new File([svgString], getSafeFilename('svg'), { type: 'image/svg+xml' });
-    const shareData: ShareData = {
-        title: `${staffName} - SVG signature`,
-        text: `SVG signature for ${staffName}`,
-        files: [file]
-    };
-    const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    btnShare.disabled = true;
 
-    if (isMobileDevice && navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
-        try {
-            await navigator.share(shareData);
-            showToast('Signature shared');
-            return;
-        } catch (err) {
-            if (err instanceof DOMException && err.name === 'AbortError') return;
+    try {
+        const pdfBlob = await generateVectorPdfBlob(engine, settings);
+        const file = new File([pdfBlob], getSafeFilename('pdf'), { type: 'application/pdf' });
+        const shareData: ShareData = {
+            title: `${staffName} - Vector PDF signature`,
+            text: `Vector PDF signature for ${staffName}`,
+            files: [file]
+        };
+        const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        if (isMobileDevice && navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+            try {
+                await navigator.share(shareData);
+                showToast('Vector PDF shared');
+                return;
+            } catch (err) {
+                if (err instanceof DOMException && err.name === 'AbortError') return;
+            }
         }
-    }
 
-    const subject = encodeURIComponent(`${staffName} - SVG signature`);
-    const body = encodeURIComponent(`SVG signature for ${staffName}\n\nThe SVG markup is included below:\n\n${svgString}`);
-    window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    showToast('Opening your email app');
+        await downloadVectorPdf(engine, settings, file.name);
+        showToast('Vector PDF downloaded because file sharing is unavailable');
+    } catch (err) {
+        console.error('Failed to generate PDF for sharing:', err);
+        showToast('Error generating vector PDF');
+    } finally {
+        btnShare.disabled = false;
+    }
 });
 
 // Download A4 Sheet PDF

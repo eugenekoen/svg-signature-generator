@@ -74,14 +74,12 @@ export function downloadSvgFile(svgString: string, filename: string): void {
 }
 
 /**
- * Generates and downloads a 100% vector PDF file (exact 50mm x 25mm dimensions)
- * without any rasterization.
+ * Generates a 100% vector PDF file (exact 50mm x 25mm dimensions) without rasterization.
  */
-export async function downloadVectorPdf(
+export async function generateVectorPdfBlob(
     drawingEngine: DrawingEngine,
-    settings: ExportSettings,
-    filename: string
-): Promise<void> {
+    settings: ExportSettings
+): Promise<Blob> {
     const svgMarkup = generateSvgMarkup(drawingEngine, settings);
 
     // Parse SVG string into a DOM element
@@ -114,11 +112,22 @@ export async function downloadVectorPdf(
             height: 25
         });
 
-        const safeFilename = filename.endsWith('.pdf') ? filename : `${filename}.pdf`;
-        pdf.save(safeFilename);
+        return pdf.output('blob');
     } finally {
         document.body.removeChild(container);
     }
+}
+
+/**
+ * Generates and downloads a 100% vector PDF file (exact 50mm x 25mm dimensions).
+ */
+export async function downloadVectorPdf(
+    drawingEngine: DrawingEngine,
+    settings: ExportSettings,
+    filename: string
+): Promise<void> {
+    const pdfBlob = await generateVectorPdfBlob(drawingEngine, settings);
+    triggerFileDownload(pdfBlob, filename.endsWith('.pdf') ? filename : `${filename}.pdf`);
 }
 
 /**
